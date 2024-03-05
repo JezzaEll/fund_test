@@ -1,0 +1,36 @@
+<h1>Fund List</h1>
+<form method="get" action="{% url 'fund_list' %}">
+    <label for="strategy">Filter by Strategy:</label>
+    
+    <select id="strategy" name="strategy">
+        <option value="" {% if not request.GET.strategy %}selected{% endif %}>All</option>
+        {% for strategy in strategies %}
+            <option value="{{ strategy }}" {% if request.GET.strategy == strategy %}selected{% endif %}>{{ strategy }}</option>
+        {% endfor %}
+    </select>
+    
+    <button type="submit">Filter</button>
+</form>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Strategy</th>
+            <th>AUM</th>
+            <th>Inception Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fund in funds %}
+            <tr>
+                <td>{{ fund.name }}</td>
+                <td>{{ fund.strategy }}</td>
+                <td>{% if fund.aum %} {{fund.aum}} {% else %} &nbsp; {% endif %}</td>
+                <td>{% if fund.inception_date %} {{fund.inception_date}} {% else %} &nbsp; {% endif %}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p>Total number of funds: {{ funds.count }}</p>
+<p>Total AUM: {{ total_aum }}</p>
+<p style="float: left; width: 175px;" align="center"><a href="{% url 'fund_upload' %}" >Upload New Funds</a></p>
