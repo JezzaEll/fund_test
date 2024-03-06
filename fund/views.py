@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.db.models import Sum
 from .models import Fund
 from .forms import FundUploadForm
 
@@ -13,9 +14,9 @@ import csv
 def fund_list(request):
     strategy = request.GET.get('strategy', '')
     funds = Fund.objects.filter(strategy=strategy) if strategy else Fund.objects.all()
-    strategies = funds.values_list('strategy', flat=True).distinct
-    total_aum = Fund.objects.filter(strategy=strategy).count() if strategy else Fund.objects.all().count()
-    context = {'funds': funds, 'total_aum': total_aum, 'strategies': strategies}
+    strategies = Fund.objects.all().order_by('strategy').values_list('strategy', flat=True).distinct()
+    total_aum = funds.aggregate(Sum('aum'))
+    context = {'funds': funds, 'total_aum': total_aum['aum__sum'], 'strategies': strategies}
     return render(request, 'fund/fund_list.html', context)
 
 def fund_upload(request):

@@ -32,5 +32,5 @@
     </tbody>
 </table>
 <p>Total number of funds: {{ funds.count }}</p>
-<p>Total AUM: {{ total_aum }}</p>
+<p>Total AUM: {% if total_aum %} {{total_aum}} {% else %} &nbsp; {% endif %}</p>
 <p style="float: left; width: 175px;" align="center"><a href="{% url 'fund_upload' %}" >Upload New Funds</a></p>
